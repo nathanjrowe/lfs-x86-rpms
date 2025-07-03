@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Build RPM
 
 # Controls when the workflow will run
 on:
@@ -13,21 +13,38 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+  build-srpm:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     container:
-      image: 
+      image: ghcr.io/nathanjrowe/rpmbuilder:latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
+      
+      - name: Move files
+        run: |
+          mv $GITHUB_WORKSPACE/*.spec SPECS/
+          mv $GITHUB_WORKSPACE/* SOURCES/
+          
+      - name: Build Dependencies
+        run: yum-buildep SPECS/*.spec
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Download sources
+        run: |
+          pushd SOURCES/
+          cat sources | xargs curl -L0 -O
+          popd
+
+      - name: Build SRPM
+        run: rpmbuild -bs SPECS/*.spec
+
+      - name: Upload SRPM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: SRPMS/*.srpm
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
