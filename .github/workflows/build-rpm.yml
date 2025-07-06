@@ -40,7 +40,7 @@ jobs:
       - name: Move files
         run: |
           mv rpms/${{ matrix.dir }}/*.spec /root/rpmbuild/SPECS/
-          mv rpms/${{ matrix.dir }}/* /root/rpmbuild//SOURCES/ || true
+          mv rpms/${{ matrix.dir }}/* /root/rpmbuild/SOURCES/ || true
 
       - name: Build Dependencies
         run: yum-builddep -y /root/rpmbuild/SPECS/*.spec
