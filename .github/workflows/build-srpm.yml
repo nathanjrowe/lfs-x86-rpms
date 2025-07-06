@@ -1,18 +1,11 @@
-# This is a basic workflow to help you get started with Actions
 name: Build RPM
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-
-    find-changes:
+  find-changes:
     runs-on: ubuntu-latest
     outputs:
       changed_dirs: ${{ steps.set-dirs.outputs.changed_dirs }}
@@ -23,45 +16,44 @@ jobs:
       - name: Get list of changed rpm subdirectories
         id: set-dirs
         run: |
-          dirs=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} |
+          dirs=$(git diff --name-only ${{ github.event.before || 'HEAD~1' }} ${{ github.sha }} |
               grep '^rpms/' |
               cut -d/ -f2 |
               sort -u |
               jq -R -s -c 'split("\n") | map(select(length > 0))')
           echo "changed_dirs=$dirs" >> $GITHUB_OUTPUT
+
   build-rpm:
     needs: find-changes
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/nathanjrowe/rpmbuilder:latest
     strategy:
       matrix:
         dir: ${{ fromJson(needs.find-changes.outputs.changed_dirs) }}
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-      
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Move files
         run: |
-          mv $GITHUB_WORKSPACE/${{ matrix.dir }}/*.spec SPECS/
-          mv $GITHUB_WORKSPACE/${{ matrix.dir }}/* SOURCES/
-          
+          mkdir -p SPECS SOURCES SRPMS
+          mv rpms/${{ matrix.dir }}/*.spec SPECS/
+          mv rpms/${{ matrix.dir }}/* SOURCES/ || true
+
       - name: Build Dependencies
-        run: yum-buildep SPECS/*.spec
+        run: yum-builddep -y SPECS/*.spec
 
       - name: Download sources
         run: |
           pushd SOURCES/
-          cat sources | xargs curl -L0 -O
+          [ -f sources ] && cat sources | xargs curl -L0 -O || echo "No sources file"
           popd
 
       - name: Build SRPM
-        run: rpmbuild -bs SPECS/*.spec
+        run: rpmbuild -bs SPECS/*.spec --define "_srcrpmdir $GITHUB_WORKSPACE/SRPMS"
 
       - name: Upload SRPM artifact
         uses: actions/upload-artifact@v4
         with:
-          path: SRPMS/*.srpm
+          path: SRPMS/*.src.rpm
