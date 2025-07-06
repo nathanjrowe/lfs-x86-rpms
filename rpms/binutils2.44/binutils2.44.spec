@@ -7,7 +7,6 @@ URL: https://www.gnu.org/software/binutils/
 
 Source0: %{name}-%{version}.tar.gz
 
-
 %description
 The GNU Binutils are a collection of binary tools. The main ones are:
 
