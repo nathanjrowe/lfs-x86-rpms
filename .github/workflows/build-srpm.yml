@@ -16,7 +16,7 @@ jobs:
       - name: Get list of changed rpm subdirectories
         id: set-dirs
         run: |
-          dirs=$(git diff --name-only ${{ github.event.before || 'HEAD~1' }} ${{ github.sha }} |
+          dirs=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} |
               grep '^rpms/' |
               cut -d/ -f2 |
               sort -u |
