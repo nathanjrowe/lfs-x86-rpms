@@ -30,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/nathanjrowe/rpmbuilder:main
+      options: --workdir /rpmbuild
     strategy:
       matrix:
         dir: ${{ fromJson(needs.find-changes.outputs.changed_dirs) }}
@@ -55,7 +56,10 @@ jobs:
       - name: Build SRPM
         run: rpmbuild -bs SPECS/*.spec
 
-      - name: Upload SRPM artifact
+      - name: Rebuild SRPM
+        run: rpmbuild --rebuild SRPMS/*.src.rpm
+
+      - name: Upload RPM artifact
         uses: actions/upload-artifact@v4
         with:
-          path: SRPMS/*.src.rpm
+          path: RPMS/*.rpm
