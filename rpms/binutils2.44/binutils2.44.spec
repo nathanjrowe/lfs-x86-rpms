@@ -7,6 +7,8 @@ URL: https://www.gnu.org/software/binutils/
 
 Source0: %{name}-%{version}.tar.gz
 
+BuildRequires: gcc
+BuildRequires: make
 
 %description
 The GNU Binutils are a collection of binary tools. The main ones are:
@@ -15,8 +17,7 @@ ld - the GNU linker.
 as - the GNU assembler.
 gold - a new, faster, ELF only linker.
 
-BuildRequires: gcc
-BuildRequires: make
+
 
 %prep
 %setup -q -n %{name}-%{version}
