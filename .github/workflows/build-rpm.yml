@@ -63,8 +63,10 @@ jobs:
         run: |
           rpmbuild --rebuild /root/rpmbuild/SRPMS/*.src.rpm \
             --define "_topdir /root/rpmbuild"
+          ls /root/rpmbuild/RPMS/
 
       - name: Upload RPM artifact
         uses: actions/upload-artifact@v4
         with:
           path: /root/rpmbuild/RPMS/*.rpm
+          if-no-files-found: error
