@@ -15,6 +15,7 @@ ld - the GNU linker.
 as - the GNU assembler.
 gold - a new, faster, ELF only linker.
 
+BuildRequires: gcc
 BuildRequires: make
 
 %prep
