@@ -17,7 +17,7 @@ gold - a new, faster, ELF only linker.
 BuildRequires: make
 
 %prep
-%setup -qC
+%setup -q -n %{name}-%{version}
 
 %build
 
