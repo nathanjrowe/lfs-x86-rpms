@@ -53,7 +53,7 @@ jobs:
           popd
 
       - name: Build SRPM
-        run: rpmbuild -bs SPECS/*.spec --define "_srcrpmdir $GITHUB_WORKSPACE/SRPMS"
+        run: rpmbuild -bs SPECS/*.spec
 
       - name: Upload SRPM artifact
         uses: actions/upload-artifact@v4
