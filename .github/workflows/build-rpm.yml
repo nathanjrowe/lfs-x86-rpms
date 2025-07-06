@@ -2,6 +2,8 @@ name: Build RPM
 
 on:
   push:
+     paths:
+      - 'rpms/**'
   workflow_dispatch:
 
 jobs:
