@@ -17,7 +17,6 @@ ld - the GNU linker.
 as - the GNU assembler.
 gold - a new, faster, ELF only linker.
 
-
 %prep
 %setup -q -n %{name}-%{version}
 
