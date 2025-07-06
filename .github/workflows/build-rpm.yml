@@ -30,7 +30,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/nathanjrowe/rpmbuilder:main
-      options: --workdir /rpmbuild
     strategy:
       matrix:
         dir: ${{ fromJson(needs.find-changes.outputs.changed_dirs) }}
@@ -40,26 +39,25 @@ jobs:
 
       - name: Move files
         run: |
-          mkdir -p SPECS SOURCES SRPMS
-          mv rpms/${{ matrix.dir }}/*.spec SPECS/
-          mv rpms/${{ matrix.dir }}/* SOURCES/ || true
+          mv rpms/${{ matrix.dir }}/*.spec /rpmbuild/SPECS/
+          mv rpms/${{ matrix.dir }}/* /rpmbuild/SOURCES/ || true
 
       - name: Build Dependencies
-        run: yum-builddep -y SPECS/*.spec
+        run: yum-builddep -y /rpmbuild/SPECS/*.spec
 
       - name: Download sources
         run: |
-          pushd SOURCES/
+          pushd /rpmbuild/SOURCES/
           [ -f sources ] && cat sources | xargs curl -L0 -O || echo "No sources file"
           popd
 
       - name: Build SRPM
-        run: rpmbuild -bs SPECS/*.spec
+        run: rpmbuild -bs /rpmbuild/SPECS/*.spec
 
       - name: Rebuild SRPM
-        run: rpmbuild --rebuild SRPMS/*.src.rpm
+        run: rpmbuild --rebuild /rpmbuild/SRPMS/*.src.rpm
 
       - name: Upload RPM artifact
         uses: actions/upload-artifact@v4
         with:
-          path: RPMS/*.rpm
+          path: /rpmbuild/RPMS/*.rpm
