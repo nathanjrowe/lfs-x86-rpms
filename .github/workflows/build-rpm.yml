@@ -59,7 +59,7 @@ jobs:
 
       - name: Rebuild SRPM
         run: |
-          rpmbuild --rebuild /root/rpmbuild/SRPMS/*.src.rpm
+          rpmbuild --rebuild /root/rpmbuild/SRPMS/*.src.rpm \
             --define "_topdir /root/rpmbuild"
 
       - name: Upload RPM artifact
