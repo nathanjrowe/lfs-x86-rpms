@@ -53,15 +53,13 @@ jobs:
 
       - name: Build SRPM
         run: |
-          pushd /root/rpmbuild/
-          rpmbuild -bs SPECS/*.spec
-          popd
+          HOME=/root/rpmbuild
+          rpmbuild -bs /root/rpmbuild/SPECS/*.spec
 
       - name: Rebuild SRPM
         run: |
-          pushd /root/rpmbuild/
-          rpmbuild --rebuild SRPMS/*.src.rpm
-          popd
+          HOME=/root/rpmbuild
+          rpmbuild --rebuild /root/rpmbuild/SRPMS/*.src.rpm
 
       - name: Upload RPM artifact
         uses: actions/upload-artifact@v4
