@@ -39,6 +39,8 @@ jobs:
 
       - name: Move files
         run: |
+          ls /
+          ls /rpmbuild
           mv rpms/${{ matrix.dir }}/*.spec /rpmbuild/SPECS/
           mv rpms/${{ matrix.dir }}/* /rpmbuild/SOURCES/ || true
 
