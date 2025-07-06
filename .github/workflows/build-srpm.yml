@@ -29,7 +29,7 @@ jobs:
     needs: find-changes
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/nathanjrowe/rpmbuilder:latest
+      image: ghcr.io/nathanjrowe/rpmbuilder:sha256-bc2de42f6240273c2901c65e8abe3605408156b27281aa879903014bb27db935.sig
     strategy:
       matrix:
         dir: ${{ fromJson(needs.find-changes.outputs.changed_dirs) }}
