@@ -60,6 +60,7 @@ jobs:
       - name: Rebuild SRPM
         run: |
           rpmbuild --rebuild /root/rpmbuild/SRPMS/*.src.rpm
+            --define "_topdir /root/rpmbuild"
 
       - name: Upload RPM artifact
         uses: actions/upload-artifact@v4
