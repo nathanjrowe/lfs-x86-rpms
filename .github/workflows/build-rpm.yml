@@ -39,26 +39,25 @@ jobs:
 
       - name: Move files
         run: |
-          ls /rpmbuild/
-          mv rpms/${{ matrix.dir }}/*.spec /rpmbuild/SPECS/
-          mv rpms/${{ matrix.dir }}/* /rpmbuild/SOURCES/ || true
+          mv rpms/${{ matrix.dir }}/*.spec /root/rpmbuild/SPECS/
+          mv rpms/${{ matrix.dir }}/* /root/rpmbuild//SOURCES/ || true
 
       - name: Build Dependencies
-        run: yum-builddep -y /rpmbuild/SPECS/*.spec
+        run: yum-builddep -y /root/rpmbuild/SPECS/*.spec
 
       - name: Download sources
         run: |
-          pushd /rpmbuild/SOURCES/
+          pushd /root/rpmbuild/SOURCES/
           [ -f sources ] && cat sources | xargs curl -L0 -O || echo "No sources file"
           popd
 
       - name: Build SRPM
-        run: rpmbuild -bs /rpmbuild/SPECS/*.spec
+        run: rpmbuild -bs /root/rpmbuild/SPECS/*.spec
 
       - name: Rebuild SRPM
-        run: rpmbuild --rebuild /rpmbuild/SRPMS/*.src.rpm
+        run: rpmbuild --rebuild /root/rpmbuild/SRPMS/*.src.rpm
 
       - name: Upload RPM artifact
         uses: actions/upload-artifact@v4
         with:
-          path: /rpmbuild/RPMS/*.rpm
+          path: /root/rpmbuild/RPMS/*.rpm
