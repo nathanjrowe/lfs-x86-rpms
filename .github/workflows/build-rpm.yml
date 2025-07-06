@@ -53,12 +53,12 @@ jobs:
 
       - name: Build SRPM
         run: |
-          HOME=/root/rpmbuild
-          rpmbuild -bs /root/rpmbuild/SPECS/*.spec
+          rpmbuild -bs /root/rpmbuild/SPECS/*.spec \
+            --define "_topdir /root/rpmbuild" \
+            --define "_srcrpmdir /root/rpmbuild/SRPMS"
 
       - name: Rebuild SRPM
         run: |
-          HOME=/root/rpmbuild
           rpmbuild --rebuild /root/rpmbuild/SRPMS/*.src.rpm
 
       - name: Upload RPM artifact
