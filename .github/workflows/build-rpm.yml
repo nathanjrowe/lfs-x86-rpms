@@ -26,7 +26,7 @@ jobs:
               sort -u |
               jq -R -s -c 'split("\n") | map(select(length > 0))')
           echo "changed_dirs=$dirs" >> $GITHUB_OUTPUT
-
+        continue-on-error: false
   build-rpm:
     needs: find-changes
     runs-on: ubuntu-latest
