@@ -5,7 +5,7 @@ License: GNU GPL
 Summary: The GNU Binutils are a collection of binary tools.
 URL: https://gcc.gnu.org/
 
-Source0: %{name}-%{version}.tar.gz
+Source0: %{name}-%{version}.tar.xz
 Source1: mpfr-4.2.1.tar.xz
 Source2: gmp-6.3.0.tar.xz
 Source3: mpc-1.3.1.tar.gz
